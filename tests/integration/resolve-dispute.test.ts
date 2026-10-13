@@ -5,7 +5,6 @@ import { POST as recordPayment } from "@/app/api/payments/route";
 import { db } from "@/lib/db";
 import type { CollectionsQueue } from "@/lib/domain/aging";
 import type { Prisma } from "@/lib/generated/prisma/client";
-import { asInvoiceStatus, transitionInvoice } from "@/lib/domain/invoice-status";
 import type { Actor } from "@/lib/domain/permissions";
 import type { ApiErrorBody } from "@/lib/http/errors";
 import { admin, agent, auditFor, callRoute, NOW, resetDatabase, viewer } from "./helpers";
@@ -63,10 +62,11 @@ function parse(json: string | null): Record<string, unknown> | null {
 
 describe("POST /api/disputes/:id/resolve", () => {
   it("[resolve-dispute] accepting issues a linked credit note, reduces the balance and settles the invoice", async () => {
+    // Seeded under-review dispute: the whole invoice balance is disputed as a duplicate.
     const dispute = await findDispute({ status: "under_review" });
     const invoiceBefore = dispute.invoice;
-    const expectedCredit = Math.min(dispute.amountMinor, invoiceBefore.balanceMinor);
-    expect(expectedCredit).toBeGreaterThan(0);
+    const expectedCredit = invoiceBefore.balanceMinor;
+    expect(dispute.amountMinor).toBe(invoiceBefore.balanceMinor);
 
     const { status, body } = await resolve(dispute.id, { resolution: "accepted", note: NOTE });
     expect(status).toBe(200);
@@ -89,17 +89,11 @@ describe("POST /api/disputes/:id/resolve", () => {
     expect(creditNote).toMatchObject({ id: body.data.creditNote!.id, amountMinor: expectedCredit, issuedById: admin.id });
 
     const invoiceAfter = (await db.invoice.findUnique({ where: { id: invoiceBefore.id } }))!;
-    const expectedState = {
-      status: asInvoiceStatus(invoiceBefore.status),
-      totalMinor: invoiceBefore.totalMinor,
-      amountPaidMinor: invoiceBefore.amountPaidMinor,
+    expect(invoiceAfter).toMatchObject({
+      status: "paid",
+      balanceMinor: 0,
       amountCreditedMinor: invoiceBefore.amountCreditedMinor + expectedCredit,
-      dueDate: invoiceBefore.dueDate,
-    };
-    expect(invoiceAfter.amountCreditedMinor).toBe(expectedState.amountCreditedMinor);
-    expect(invoiceAfter.balanceMinor).toBe(invoiceBefore.balanceMinor - expectedCredit);
-    expect(invoiceAfter.status).toBe(transitionInvoice(expectedState, "settle", new Date()));
-    if (invoiceAfter.balanceMinor === 0) expect(invoiceAfter.status).toBe("paid");
+    });
 
     expect((await auditFor(creditNote!.id)).map((entry) => entry.action)).toContain("credit_note.issued");
     expect((await auditFor(invoiceBefore.id)).map((entry) => entry.action)).toContain("invoice.settled");
@@ -116,20 +110,34 @@ describe("POST /api/disputes/:id/resolve", () => {
 
     const invoiceAfter = (await db.invoice.findUnique({ where: { id: dispute.invoiceId } }))!;
     expect(invoiceAfter.balanceMinor).toBe(dispute.invoice.balanceMinor - dispute.amountMinor);
-    expect(invoiceAfter.status).toBe(
-      transitionInvoice(
-        {
-          status: asInvoiceStatus(dispute.invoice.status),
-          totalMinor: dispute.invoice.totalMinor,
-          amountPaidMinor: dispute.invoice.amountPaidMinor,
-          amountCreditedMinor: dispute.invoice.amountCreditedMinor + dispute.amountMinor,
-          dueDate: dispute.invoice.dueDate,
-        },
-        "settle",
-        new Date(),
-      ),
-    );
-    expect(invoiceAfter.status).not.toBe("paid");
+    expect(["partially_paid", "overdue"]).toContain(dispute.invoice.status);
+    expect(invoiceAfter.status).toBe(dispute.invoice.status);
+  });
+
+  it("[resolve-dispute] accepting caps the credit at the remaining balance", async () => {
+    const dispute = await findDispute({ status: "under_review" });
+    const partPaymentMinor = Math.floor(dispute.invoice.balanceMinor / 4);
+    const payment = await callRoute(recordPayment, {
+      method: "POST",
+      path: "/api/payments",
+      body: {
+        customerId: dispute.customerId,
+        currency: dispute.currency,
+        amountMinor: partPaymentMinor,
+        method: "bank_transfer",
+        receivedAt: NOW.toISOString(),
+        allocation: { mode: "explicit", lines: [{ invoiceId: dispute.invoiceId, amountMinor: partPaymentMinor }] },
+      },
+    });
+    expect(payment.status).toBe(201);
+    const remainingMinor = dispute.invoice.balanceMinor - partPaymentMinor;
+    expect(dispute.amountMinor).toBeGreaterThan(remainingMinor);
+
+    const { status, body } = await resolve(dispute.id, { resolution: "accepted", note: NOTE });
+    expect(status).toBe(200);
+    expect(body.data.creditNote?.amountMinor).toBe(remainingMinor);
+    const invoiceAfter = (await db.invoice.findUnique({ where: { id: dispute.invoiceId } }))!;
+    expect(invoiceAfter).toMatchObject({ status: "paid", balanceMinor: 0 });
   });
 
   it("[resolve-dispute] accepting when the invoice is already paid in full issues no credit note", async () => {

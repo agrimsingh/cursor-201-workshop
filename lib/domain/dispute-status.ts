@@ -19,6 +19,7 @@ export type DisputeEvent = (typeof DISPUTE_EVENTS)[number];
 
 /** Events raised from the dispute page's action buttons via POST /api/disputes/:id/transitions. */
 export type DisputeReviewEvent = Exclude<DisputeEvent, "resolve">;
+export const DISPUTE_REVIEW_EVENTS = ["start_review", "withdraw"] as const satisfies readonly DisputeReviewEvent[];
 
 export const DISPUTE_RESOLUTIONS = ["accepted", "rejected"] as const;
 export type DisputeResolution = (typeof DISPUTE_RESOLUTIONS)[number];
@@ -82,6 +83,11 @@ export function planDisputeResolution(input: {
 }): { creditNoteMinor: number } {
   if (input.resolution === "rejected" || input.invoiceBalanceMinor <= 0) return { creditNoteMinor: 0 };
   return { creditNoteMinor: Math.max(0, Math.min(input.disputedMinor, input.invoiceBalanceMinor)) };
+}
+
+/** The balance a resolution can still credit: paid and void invoices have nothing left to credit. */
+export function creditableBalance(invoice: InvoiceState): number {
+  return isOpenInvoice(invoice.status) ? invoiceBalance(invoice) : 0;
 }
 
 /** Guards for opening a new dispute against an invoice. */

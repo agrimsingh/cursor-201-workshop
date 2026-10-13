@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DISPUTE_REASONS, DISPUTE_RESOLUTIONS, DISPUTE_STATUSES } from "@/lib/domain/dispute-status";
+import { DISPUTE_REASONS, DISPUTE_RESOLUTIONS, DISPUTE_REVIEW_EVENTS, DISPUTE_STATUSES } from "@/lib/domain/dispute-status";
 import { idSchema, pageSchema, pageSizeSchema, positiveMinorSchema } from "@/lib/validation/common";
 
 export const openDisputeSchema = z.object({
@@ -12,7 +12,7 @@ export type OpenDisputeInput = z.infer<typeof openDisputeSchema>;
 
 // `resolve` needs a resolution and a note, so it has its own endpoint and is not accepted here.
 export const disputeTransitionSchema = z.object({
-  action: z.enum(["start_review", "withdraw"]),
+  action: z.enum(DISPUTE_REVIEW_EVENTS),
 });
 
 export const disputeListQuerySchema = z.object({

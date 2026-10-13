@@ -2,13 +2,13 @@ import { db } from "@/lib/db";
 import {
   asDisputeStatus,
   assertCanOpenDispute,
+  creditableBalance,
   planDisputeResolution,
   transitionDispute,
   type DisputeReviewEvent,
   type DisputeStatus,
 } from "@/lib/domain/dispute-status";
 import { NotFoundError } from "@/lib/domain/errors";
-import { invoiceBalance, isOpenInvoice } from "@/lib/domain/invoice-status";
 import { assertCan, type Actor } from "@/lib/domain/permissions";
 import { recordAudit } from "@/lib/services/audit";
 import { createCreditNoteInTx } from "@/lib/services/credit-notes";
@@ -102,7 +102,7 @@ export async function resolveDispute(actor: Actor, id: string, input: ResolveDis
     const { creditNoteMinor } = planDisputeResolution({
       resolution: input.resolution,
       disputedMinor: dispute.amountMinor,
-      invoiceBalanceMinor: isOpenInvoice(invoice.status) ? invoiceBalance(invoice) : 0,
+      invoiceBalanceMinor: creditableBalance(invoice),
     });
     const creditNote =
       creditNoteMinor > 0

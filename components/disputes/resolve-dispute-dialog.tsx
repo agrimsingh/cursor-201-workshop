@@ -27,13 +27,27 @@ export function ResolveDisputeDialog({
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  function close() {
+    if (busy) return;
+    setResolution(null);
+    setNote("");
+    setError(null);
+    onClose();
+  }
+
   async function submit(event: FormEvent) {
     event.preventDefault();
     if (!resolution) return;
+    if (note.trim().length < 5) {
+      setError("Write a resolution note of at least 5 characters.");
+      return;
+    }
     setError(null);
     setBusy(true);
     try {
       await apiRequest("POST", `/api/disputes/${disputeId}/resolve`, { resolution, note });
+      setResolution(null);
+      setNote("");
       onClose();
       router.refresh();
     } catch (err) {
@@ -60,7 +74,7 @@ export function ResolveDisputeDialog({
   ];
 
   return (
-    <Dialog open={open} onClose={onClose} title="Resolve dispute">
+    <Dialog open={open} onClose={close} title="Resolve dispute">
       <form className="flex flex-col gap-3" onSubmit={submit}>
         <fieldset className="flex flex-col gap-2">
           <legend className="label">Outcome</legend>
@@ -104,7 +118,7 @@ export function ResolveDisputeDialog({
         </div>
         <FormError message={error} />
         <div className="flex justify-end gap-2">
-          <button type="button" className="btn-secondary" onClick={onClose}>
+          <button type="button" className="btn-secondary" disabled={busy} onClick={close}>
             Cancel
           </button>
           <button type="submit" className="btn-primary" disabled={busy}>

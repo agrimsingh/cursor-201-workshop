@@ -87,6 +87,19 @@ describe("disputes", () => {
     );
   });
 
+  it("[resolve-dispute] does not accept resolve on the transitions endpoint", async () => {
+    const dispute = (await db.dispute.findFirst({ where: { status: "open" } }))!;
+    const { status, body } = await callRoute<{ id: string }, ApiErrorBody>(transition, {
+      method: "POST",
+      path: `/api/disputes/${dispute.id}/transitions`,
+      params: { id: dispute.id },
+      body: { action: "resolve" },
+    });
+    expect(status).toBe(400);
+    expect(body.error.code).toBe("VALIDATION_FAILED");
+    expect((await db.dispute.findUnique({ where: { id: dispute.id } }))!.status).toBe("open");
+  });
+
   it("does not let viewers open disputes", async () => {
     const invoice = await overdueInvoiceWithoutDispute();
     const { status } = await callRoute(openDispute, {

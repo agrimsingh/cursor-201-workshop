@@ -5,12 +5,19 @@ import { Money } from "@/components/ui/money";
 import { PageHeader, Section } from "@/components/ui/page-header";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { currentActor } from "@/lib/auth/session";
-import { asDisputeStatus, availableDisputeActions, isActiveDispute } from "@/lib/domain/dispute-status";
+import {
+  asDisputeStatus,
+  availableDisputeActions,
+  creditableBalance,
+  isActiveDispute,
+  planDisputeResolution,
+} from "@/lib/domain/dispute-status";
 import { can } from "@/lib/domain/permissions";
 import { formatDate, formatDateTime, humanize } from "@/lib/format";
 import { orNotFound } from "@/lib/not-found";
 import { auditTrail } from "@/lib/services/audit";
 import { getDisputeDetail } from "@/lib/services/disputes";
+import { toInvoiceState } from "@/lib/services/invoices";
 
 export default async function DisputePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -20,7 +27,14 @@ export default async function DisputePage({ params }: { params: Promise<{ id: st
   const actions = can(actor.role, "disputes:review") ? availableDisputeActions(status) : [];
   const resolve =
     can(actor.role, "disputes:resolve") && isActiveDispute(status)
-      ? { currency: dispute.currency, creditMinor: Math.min(dispute.amountMinor, dispute.invoice.balanceMinor) }
+      ? {
+          currency: dispute.currency,
+          creditMinor: planDisputeResolution({
+            resolution: "accepted",
+            disputedMinor: dispute.amountMinor,
+            invoiceBalanceMinor: creditableBalance(toInvoiceState(dispute.invoice)),
+          }).creditNoteMinor,
+        }
       : null;
 
   return (
@@ -87,13 +101,16 @@ export default async function DisputePage({ params }: { params: Promise<{ id: st
                     <dt className="text-slate-500">Credit note</dt>
                     <dd data-testid="dispute-resolution-credit-note">
                       <span className="font-mono">{dispute.creditNote.number}</span> ·{" "}
-                      <Money minor={dispute.creditNote.amountMinor} currency={dispute.creditNote.currency} /> ·{" "}
-                      <Link className="link" href={`/invoices/${dispute.invoice.id}`}>
-                        View on invoice {dispute.invoice.number}
-                      </Link>
+                      <Money minor={dispute.creditNote.amountMinor} currency={dispute.creditNote.currency} />
                     </dd>
                   </>
                 ) : null}
+                <dt className="text-slate-500">Invoice</dt>
+                <dd>
+                  <Link className="link" href={`/invoices/${dispute.invoice.id}`}>
+                    View invoice {dispute.invoice.number}
+                  </Link>
+                </dd>
               </dl>
             </Section>
           ) : null}
