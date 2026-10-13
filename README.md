@@ -1,5 +1,16 @@
 # Cursor 201 workshop: Tally
 
+> **You're on `step-1-context`**: the finished state of [Step 1: Context 60/40](docs/steps/step-1.md).
+>
+> **What changed in this step**
+>
+> - The invoices list has a **Days late** column, computed on the server as `daysPastDue` in `lib/services/invoices.ts#listInvoices` (whole days past due for open invoices, otherwise 0).
+> - `components/invoices/invoice-list.tsx` renders it after **Due** ("—" for 0, rose for 61+ days).
+> - A new integration test checks `daysPastDue` for overdue and paid invoices.
+> - Still on purpose: the `[filter-bug]` tests fail (fixed in step 3) and resolving disputes is unbuilt (step 5).
+>
+> **Next:** [Step 2: Rules and skills](docs/steps/step-2.md), starting from this branch. Re-run `npx prisma db seed` after switching branches.
+
 A hands-on workshop for getting more out of Cursor on a real codebase. You'll work on **Tally**, a small accounts-receivable console for a B2B company, and practise six techniques: managing context, rules and skills, MCPs and plugins, model selection, parallel subagents, and Cloud Agents with Bugbot.
 
 Every section of the workshop has a branch with its finished state, so you can follow along live, jump ahead, or catch up at any point. After the session, the [homework](#keep-building) turns the Collections queue into a proper product.
