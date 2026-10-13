@@ -1,15 +1,14 @@
 # Cursor 201 workshop: Tally
 
-> **You're on `step-3-mcp-plugin`**: the finished state of [Step 3: MCPs and the plugin marketplace](docs/steps/step-3.md). Includes steps 1 and 2.
+> **You're on `step-4-models`**: the finished state of [Step 4: Model selection](docs/steps/step-4.md). Includes steps 1 to 3.
 >
 > **What changed in this step**
 >
-> - `.cursor/mcp.json` connects the **GitHub MCP server**. It reads your token from `${env:GITHUB_PERSONAL_ACCESS_TOKEN}`, so no secret is stored in the repo ([how to set it up](#connect-the-github-mcp-server)).
-> - The filter bug is fixed. The invoices page now sends `?status=` (`lib/client/invoice-list-params.ts`), which is what `GET /api/invoices` validates. The fix was made by the [bug-fix plugin](plugins/bug-fix/) (`/fix-issue`) on a `fix/issue-1-...` branch and merged as a pull request.
-> - Both `[filter-bug]` tests pass, and `npm test` and `npm run test:e2e` are fully green from here on.
+> - [`docs/model-selection.md`](docs/model-selection.md): when to pick a fast model, a frontier model or Auto, the signals that tell you to switch, and patterns like "plan strong, build fast" and using a different model for review.
+> - No code changes. The step's exercise edits are for comparison only.
 > - Still on purpose: resolving disputes is unbuilt (step 5).
 >
-> **Next:** [Step 4: Model selection](docs/steps/step-4.md), starting from this branch.
+> **Next:** [Step 5: Parallelizing](docs/steps/step-5.md), starting from this branch.
 
 A hands-on workshop for getting more out of Cursor on a real codebase. You'll work on **Tally**, a small accounts-receivable console for a B2B company, and practise six techniques: managing context, rules and skills, MCPs and plugins, model selection, parallel subagents, and Cloud Agents with Bugbot.
 
