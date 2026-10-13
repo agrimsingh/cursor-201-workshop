@@ -101,12 +101,12 @@ Each step below has a summary. Follow the link for the full guide with every pro
 
 **Goal:** teach Cursor the team's conventions once. **Start from:** `step-1-context`. **Full guide:** [docs/steps/step-2.md](docs/steps/step-2.md)
 
-1. **Open** `app/api/invoices/route.ts`, `lib/http/route.ts`, `lib/services/payments.ts`.
-2. **Rule:** `/create-rule API conventions for Tally. Apply it to app/api/**, lib/services/** and lib/validation/** ...` produces `.cursor/rules/api-conventions.mdc` (zod at every boundary, the standard error shape, Prisma only through `lib/db` in services, `assertCan` + transactions + audit for writes).
+1. **Open** `app/api/invoices/route.ts`, `app/api/payments/route.ts`, `lib/http/route.ts`, `lib/http/errors.ts`, `lib/validation/` and `lib/services/payments.ts`.
+2. **Rule:** `/create-rule API conventions for Tally. Apply it to app/api/**, lib/services/**, lib/validation/** and lib/domain/** ...` produces `.cursor/rules/api-conventions.mdc` (zod at every boundary, the standard error shape, Prisma only through `lib/db` in services, `assertCan` + transactions + audit for writes).
 3. **Skill:** `/create-skill create-api: a project skill for adding a new HTTP endpoint ...` produces `.cursor/skills/create-api/SKILL.md`. If it lands in `~/.cursor/skills`, move it into `.cursor/skills/` to make it a project skill.
 4. **Use it:** `/create-api GET /api/customers/:id/statement ...` (a customer statement with a running balance).
 5. **You should see** the rule listed under **Rules** in the context ring when editing API files, and a schema, service, route, tests and docs row created by following the skill.
-6. **Check:** `npm test`, then `curl -s http://localhost:3000/api/customers/cus_kookaburra/statement`.
+6. **Check:** `npm test`, `npm run validate:cursor`, then `curl -s http://localhost:3000/api/customers/cus_kookaburra/statement`.
 7. **Catch up:** `git checkout step-2-rules-skills`.
 8. **Try it yourself:** ask for `GET /api/credit-notes` with no extra instructions and see whether the rule is enough.
 
