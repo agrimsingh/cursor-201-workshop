@@ -39,6 +39,7 @@ lib/db.ts       the one PrismaClient
 | `lib/http/` | `route.ts` (`handle`, `ok`, `okList`, `created`, `parseJson`, `parseQuery`, `parseParams`), `errors.ts` | Every handler is wrapped in `handle()` so thrown errors become the standard error shape. |
 | `lib/auth/` | Mocked current user (cookie `tally_user`) | `actorFromRequest(req)` in route handlers, `currentActor()` in server components. |
 | `lib/client/` | Browser-side helpers: `api.ts` (fetch wrapper), `invoice-list-params.ts` | Client components only. |
+| `lib/csv.ts` | CSV building for exports | Pure. Escapes commas, quotes and newlines, and neutralises spreadsheet formulas. |
 | `app/api/` | JSON route handlers | Thin: parse → actor → one service call → respond. |
 | `app/**/page.tsx` | Server-rendered pages | Read through services; mutations go through the API from client components. |
 | `components/` | UI building blocks, grouped by feature | Client components call the API with `apiRequest` and then `router.refresh()`. |

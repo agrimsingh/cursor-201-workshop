@@ -254,7 +254,7 @@ On `main` you'll find two things left in on purpose (the bug is fixed from `step
 | `npm run test:unit` | Domain logic: state machines, allocation, aging, money, permissions |
 | `npm run test:integration` | API route handlers against a throwaway SQLite database |
 | `npm test` | Unit + integration |
-| `npm run test:e2e` | Playwright: list and filter invoices, record a payment, open a dispute (and resolve one from step 5). Uses its own database (`prisma/e2e.db`) on port 3100, so it can run next to `npm run dev`. |
+| `npm run test:e2e` | Playwright: list and filter invoices, record a payment, open a dispute (and resolve one from step 5, and export the collections CSV from step 6). Uses its own database (`prisma/e2e.db`) on port 3100, so it can run next to `npm run dev`. |
 | `npm run validate:cursor` | Checks rules, skills, subagents, `mcp.json` (no secrets), the plugin and marketplace manifests, and `BUGBOT.md` |
 | `scripts/verify-steps.sh` | Clones every step branch fresh and runs setup, the dev server, all checks and the expected test outcome for each step |
 
