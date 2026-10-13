@@ -129,7 +129,7 @@ Each step below has a summary. Follow the link for the full guide with every pro
 2. **Open** **Customize** in the sidebar and check that the **github** MCP server lists its tools. Try: `Use the GitHub MCP server to list the open issues in <you>/cursor-201-workshop.`
 3. **Allowlist:** the guide shows what an Enterprise admin configures under **Team Settings → MCP Configuration**, and where you control tool approvals (**Settings → Agents → Approvals & Execution**).
 4. **Plugin:** [install the bug-fix plugin](#install-the-bug-fix-plugin), then run `/fix-issue 1` (your issue number).
-5. **You should see** the agent read the issue over MCP, find the failing `[filter-bug]` test, trace the bug (the page sends `?state=` but the API reads `status`), fix it, run the checks, push a `fix/issue-1-...` branch and open a PR with `Fixes #1`.
+5. **You should see** the agent read the issue over MCP, find the failing `[filter-bug]` test, trace the bug (the page sends `?state=` but the API reads `status`), fix it, run the checks, push a `fix/issue-1-...` branch and open a PR against `step-2-rules-skills` with `Fixes #1`.
 6. **Check:** `npm test` is fully green, `npx playwright test e2e/invoices.spec.ts` passes, and **Status → Overdue** on `/invoices` shows only overdue invoices.
 7. **Catch up:** `git checkout step-3-mcp-plugin` (adds `.cursor/mcp.json` and the fix).
 8. **Try it yourself:** have the agent file a new issue through MCP, then fix it with `/fix-issue`.
@@ -162,7 +162,7 @@ Each step below has a summary. Follow the link for the full guide with every pro
 
 **Goal:** run work in the background and get project-aware reviews. **Start from:** `step-5-multitask`. **Full guide:** [docs/steps/step-6.md](docs/steps/step-6.md)
 
-1. **Before you start:** [enable Bugbot on your fork](#enable-bugbot-on-your-fork), and push `.cursor/BUGBOT.md` to your fork's `main`.
+1. **Before you start:** [enable Bugbot on your fork](#enable-bugbot-on-your-fork), and add `.cursor/BUGBOT.md` to the base branch of each PR you want reviewed (the guide has the commands).
 2. **Cloud Agent:** commit and push, select **Cloud** under the chat input, and paste the CSV export task from the guide (`GET /api/collections/export` plus an **Export CSV** link, with formula-injection-safe escaping and tests). From an existing local chat, use **Move to Cloud**.
 3. **Pick it up:** in the Agents Window use **Move to Local**, or check out the agent's branch.
 4. **Bugbot:** on the PR from step 3 (and the cloud agent's PR), comment `bugbot run` (add `verbose=true` to see the rules it loaded).
@@ -218,7 +218,7 @@ Then run **Developer: Reload Window** and confirm the plugin in **Customize**. C
 
 1. Go to [cursor.com/dashboard](https://cursor.com/dashboard) → **Integrations** and connect **GitHub**. Grant the Cursor app access to your fork.
 2. Open **Bugbot** (under **Automations**) and turn it on for `<you>/cursor-201-workshop`.
-3. Make sure `.cursor/BUGBOT.md` is on your fork's `main`. Bugbot reads it from the PR's base branch.
+3. Make sure `.cursor/BUGBOT.md` is on the PR's **base branch** (the branch it merges into). Bugbot reads it from there, not from the PR itself.
 4. Open or update a PR, or comment `bugbot run` on an existing one. Add `verbose=true` to list the rules it used.
 
 Bugbot needs a paid plan. On individual plans it reviews PRs you author. On Teams and Enterprise, an admin may need to enable the repository.
