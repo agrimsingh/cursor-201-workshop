@@ -9,7 +9,7 @@
 > - `GET /api/customers/:id/statement`, built by following the skill: `lib/domain/statement.ts` (pure, unit tested), `lib/validation/customers.ts`, `getCustomerStatement` in `lib/services/customers.ts`, the route, integration tests and a row in `docs/architecture.md`.
 > - Still on purpose: the `[filter-bug]` tests fail (fixed in step 3) and resolving disputes is unbuilt (step 5).
 >
-> **Next:** [Step 3: MCPs and the plugin marketplace](docs/steps/step-3.md), starting from this branch. Re-run `npx prisma db seed` after switching branches.
+> **Next:** [Step 3: MCPs and the plugin marketplace](docs/steps/step-3.md), starting from this branch. After switching branches, run `npx prisma generate && npx prisma db seed` and restart `npm run dev`.
 
 A hands-on workshop for getting more out of Cursor on a real codebase. You'll work on **Tally**, a small accounts-receivable console for a B2B company, and practise six techniques: managing context, rules and skills, MCPs and plugins, model selection, parallel subagents, and Cloud Agents with Bugbot.
 
