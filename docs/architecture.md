@@ -142,6 +142,7 @@ All responses are JSON. Success is `{ "data": ... }`, lists are `{ "data": [...]
 | GET | `/api/reports/aging` | Optional `asOf` |
 | GET | `/api/collections` | Optional `asOf` |
 | GET | `/api/customers`, `/api/customers/:id` | |
+| GET | `/api/customers/:id/statement` | Optional `currency` (defaults to the customer's billing currency). Invoices (not draft or void) as debits, payments (full amount) and credit notes as credits, by date with a running balance and `closingBalanceMinor` |
 | GET | `/api/audit` | `entityType`, `entityId`, paging |
 | GET, PUT | `/api/session` | Current user, or switch user |
 
