@@ -117,6 +117,8 @@ Then open http://localhost:3000/invoices, choose **Overdue**, and check that onl
 
 ## Catch up
 
+If you have local edits, put them aside first with `git stash` (or discard them with `git checkout -- . && git clean -fd`).
+
 ```bash
 git checkout step-3-mcp-plugin
 npm install && npx prisma generate && npx prisma db seed

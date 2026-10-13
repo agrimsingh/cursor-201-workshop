@@ -74,7 +74,7 @@ Each branch is the **finished** state of that section and includes everything be
 | 5 | `step-5-multitask` | Build "resolve a dispute" with `/multitask`, three subagents in worktrees, a Canvas and a reviewer subagent | `git checkout step-5-multitask` |
 | 6 | `step-6-cloud-bugbot` | Hand a CSV export to a Cloud Agent, pick it up locally, and have Bugbot review your PRs | `git checkout step-6-cloud-bugbot` |
 
-After switching branches, run:
+If you have local edits, put them aside first with `git stash` (or discard them with `git checkout -- . && git clean -fd`). After switching branches, run:
 
 ```bash
 npm install && npx prisma generate && npx prisma db seed
@@ -90,10 +90,10 @@ Each step below has a summary. Follow the link for the full guide with every pro
 
 1. **Open** `docs/architecture.md` (written to be @-attached), the Agent chat, and http://localhost:3000/invoices.
 2. **Whole-app chat** (Ask mode, nothing attached): `How does Tally work? Walk me through how an invoice becomes overdue and how the invoices list page gets its data.` Then check the **context ring** next to the input.
-3. **Scoped chat** (Agent mode): `@docs/architecture.md @lib/domain/aging.ts @lib/services/invoices.ts @components/invoices/invoice-list.tsx Add a "Days late" column to the invoices list...` (the full prompt is in the guide). Compare the context ring.
+3. **Scoped chat** (Agent mode): `@docs/architecture.md @lib/domain/aging.ts @lib/domain/invoice-status.ts @lib/services/invoices.ts @components/invoices/invoice-list.tsx Add a "Days late" column to the invoices list...` (the full prompt is in the guide). Compare the context ring.
 4. **Reuse it:** in a new chat, `@Chats` → pick the previous chat → `Add an integration test ... that checks daysPastDue ...`.
 5. **You should see** a **Days late** column on `/invoices`, and the scoped chat using far less context.
-6. **Check:** `npm run test:integration`. Your new test passes; only `[filter-bug]` fails (that's for step 3).
+6. **Check:** `npm run test:integration`. Your new test passes; only the `[filter-bug]` test fails (that's for step 3).
 7. **Catch up:** `git checkout step-1-context`.
 8. **Try it yourself:** add a "Days late" sort option, and work out which files you need to @-mention.
 

@@ -13,7 +13,7 @@ The rule of thumb behind the name: spend most of your effort (about 60%) choosin
 - The repo folder (`cursor .` or **File → Open Folder**).
 - The **Agent** chat (`Cmd+I` / `Ctrl+I`).
 - `docs/architecture.md`: skim it. It's written to be attached as context.
-- The app at http://localhost:3000/invoices (`npm run dev` in a terminal).
+- The app at http://localhost:3000/invoices (already running from setup; if not, run `npm run dev`).
 
 ## Do it
 
@@ -32,11 +32,11 @@ When it finishes, hover or click the **context ring** next to the prompt input. 
 Start **another new chat**, switch to **Agent** mode, and attach exactly the files the change needs. Type `@` and pick each file:
 
 ```text
-@docs/architecture.md @lib/domain/aging.ts @lib/services/invoices.ts @components/invoices/invoice-list.tsx
+@docs/architecture.md @lib/domain/aging.ts @lib/domain/invoice-status.ts @lib/services/invoices.ts @components/invoices/invoice-list.tsx
 
-Add a "Days late" column to the invoices list, right after "Due".
+Add a "Days late" column to the invoices list, right after "Due". It does not need to be sortable.
 - Compute it on the server in listInvoices as a new `daysPastDue` field on InvoiceListItem, using daysPastDue() from lib/domain/aging.ts.
-- Only open invoices (sent, partially_paid, overdue) get a value; everything else is 0.
+- Open invoices (isOpenInvoice: sent, partially_paid, overdue) get the whole days past due, never negative. Everything else, including invoices that are not due yet, is 0.
 - In the table, show "—" for 0, and colour 61+ days in rose so it stands out.
 Keep money and date handling as it is.
 ```
@@ -50,12 +50,12 @@ Start a **third new chat**. Type `@Chats`, pick the chat from part 2, and ask fo
 ```text
 @Chats <the "Days late" chat>
 
-Add an integration test to tests/integration/invoices-api.test.ts that checks daysPastDue is greater than 0 for overdue invoices and exactly 0 for paid ones. Run npm run test:integration and show me the result.
+Add an integration test to tests/integration/invoices-api.test.ts that checks daysPastDue is greater than 0 for overdue invoices and exactly 0 for paid ones. Query GET /api/invoices with ?status=overdue and ?status=paid directly, like the "filters by ?status=" test (not through toInvoiceSearchParams, which has a known bug). Run npm run test:integration and show me the result.
 ```
 
 ## What you should see
 
-- A new **Days late** column on http://localhost:3000/invoices, with numbers on overdue rows and "—" on paid, draft and void rows.
+- A new **Days late** column on http://localhost:3000/invoices, with numbers on overdue rows and "—" everywhere else (paid, draft, void and not-yet-due invoices).
 - The scoped chat used noticeably less context than the whole-app chat.
 - The third chat knew what `daysPastDue` was without you explaining it.
 
@@ -65,9 +65,11 @@ Add an integration test to tests/integration/invoices-api.test.ts that checks da
 npm run test:integration
 ```
 
-Your new `daysPastDue` test passes. One test still fails: `[filter-bug] honours the status filter sent by the invoices page`. That bug is deliberate; you'll fix it in step 3.
+Your new `daysPastDue` test passes. One integration test still fails: `[filter-bug] honours the status filter sent by the invoices page` (its e2e twin in `e2e/invoices.spec.ts` fails too). That bug is deliberate; you'll fix it in step 3.
 
 ## Catch up
+
+If you have local edits, put them aside first with `git stash` (or discard them with `git checkout -- . && git clean -fd`).
 
 ```bash
 git checkout step-1-context
