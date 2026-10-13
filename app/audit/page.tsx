@@ -11,8 +11,8 @@ const ENTITY_LINKS: Partial<Record<AuditEntityType, string>> = { invoice: "/invo
 function summarise(value: unknown): string {
   if (!value || typeof value !== "object") return "—";
   const record = value as Record<string, unknown>;
-  return ["status", "balanceMinor", "amountMinor"]
-    .filter((key) => record[key] !== undefined)
+  return ["status", "resolution", "balanceMinor", "amountMinor"]
+    .filter((key) => record[key] !== undefined && record[key] !== null)
     .map((key) => `${key}: ${String(record[key])}`)
     .join(", ") || "—";
 }

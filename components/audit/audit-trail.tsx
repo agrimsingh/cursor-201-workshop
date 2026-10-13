@@ -5,9 +5,10 @@ import { EmptyState } from "@/components/ui/page-header";
 
 function describeChange(entry: AuditEntryView): string | null {
   const before = entry.before as { status?: string } | null;
-  const after = entry.after as { status?: string } | null;
+  const after = entry.after as { status?: string; resolution?: string | null } | null;
   if (before?.status && after?.status && before.status !== after.status) {
-    return `${humanize(before.status)} → ${humanize(after.status)}`;
+    const change = `${humanize(before.status)} → ${humanize(after.status)}`;
+    return after.resolution ? `${change} (${after.resolution})` : change;
   }
   if (!before && after?.status) return humanize(after.status);
   return null;
