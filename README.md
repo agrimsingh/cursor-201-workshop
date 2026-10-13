@@ -5,9 +5,9 @@
 > **What changed in this step**
 >
 > - [`.cursor/BUGBOT.md`](.cursor/BUGBOT.md): project review guidance for Bugbot (integer money, state machines, services with permissions, transactions and audit, the API boundary, CSV formula injection, tests, secrets). Bugbot reads it from each PR's base branch.
-> - **CSV export of the collections queue**, built by a Cloud Agent from the prompt in the step guide and picked up locally: `GET /api/collections/export` (`text/csv`, `collections-YYYY-MM-DD.csv`), a formula-injection-safe `lib/csv.ts`, an **Export CSV** link on `/collections` (viewers too), plus unit, integration and e2e tests.
+> - **CSV export of the collections queue**, built by a Cloud Agent from the prompt in the step guide and picked up locally: `GET /api/collections/export` (`text/csv`, `collections-YYYY-MM-DD.csv`), a formula-injection-safe `lib/csv.ts`, a `csv()` response helper in `lib/http/route.ts`, an **Export CSV** link on `/collections` (viewers too), unit, integration (`callRouteText` helper) and e2e tests, and the export row in `docs/architecture.md`.
 >
-> **Next:** keep building with the [homework](#keep-building).
+> **Next:** keep building with the [homework](#keep-building). After switching branches, run `npx prisma generate && npx prisma db seed` and restart `npm run dev`.
 
 A hands-on workshop for getting more out of Cursor on a real codebase. You'll work on **Tally**, a small accounts-receivable console for a B2B company, and practise six techniques: managing context, rules and skills, MCPs and plugins, model selection, parallel subagents, and Cloud Agents with Bugbot.
 
