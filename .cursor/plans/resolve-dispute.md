@@ -4,19 +4,19 @@ overview: Let an admin resolve an active dispute by accepting it (credit note fo
 todos:
   - id: contract
     content: "Step 0 (lead agent, before fanning out): land the shared contract"
-    status: pending
+    status: completed
   - id: workstream-a
     content: "Workstream A: domain transition, service and POST /api/disputes/:id/resolve"
-    status: pending
+    status: completed
   - id: workstream-b
     content: "Workstream B: Resolve dialog and resolution summary on the dispute page"
-    status: pending
+    status: completed
   - id: workstream-c
     content: "Workstream C: unit, integration and e2e tests plus the audit trail entry"
-    status: pending
+    status: completed
   - id: merge-review
     content: "Merge A, then B, then C; run the reviewer and verifier subagents"
-    status: pending
+    status: completed
 ---
 
 # Resolve a dispute
