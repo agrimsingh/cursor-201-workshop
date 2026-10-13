@@ -50,7 +50,7 @@ Every section of the workshop has a branch with its finished state, so you can f
 ## Setup
 
 1. **Fork** this repository on GitHub and **untick "Copy the main branch only"**, so your fork has every step branch. (You need your own fork for step 3, when the agent pushes a branch and opens a pull request.)
-2. **Clone your fork and set up Tally** with these four commands:
+2. **Clone your fork and set up Tally:**
 
    ```bash
    git clone https://github.com/<you>/cursor-201-workshop.git
@@ -141,7 +141,7 @@ Each step below has a summary. Follow the link for the full guide with every pro
 2. **Small edit** with a fast model, then Auto: `@components/collections/overdue-sweep-button.tsx Change the success message to say "1 invoice marked overdue" (singular) ...`.
 3. **Design question** with a frontier model, then a fast model: `@docs/architecture.md @lib/domain/aging.ts @lib/services/reports.ts We want collections to prioritise by risk ... Don't write code yet.`
 4. **You should see** both models handle the small edit; the frontier model produce a deeper, more complete design; and Auto choose sensibly. Discard the edits afterwards.
-5. **Check:** compare your notes with [docs/model-selection.md](docs/model-selection.md) (on `step-4-models` and later).
+5. **Check:** compare your notes with [docs/model-selection.md](https://github.com/agrimsingh/cursor-201-workshop/blob/step-4-models/docs/model-selection.md) (on `step-4-models` and later).
 6. **Catch up:** `git checkout step-4-models`.
 7. **Try it yourself:** plan with a frontier model in Plan mode, then build with a fast model; or run `/best-of-n` across models.
 
@@ -154,7 +154,7 @@ Each step below has a summary. Follow the link for the full guide with every pro
 3. **Fan out:** `/multitask Implement @.cursor/plans/resolve-dispute.md` with step 0 first, then A, B and C as parallel subagents in their own worktrees, a Canvas for status, a merge in the order A → B → C, and a reviewer pass. Alternatively, click **Build in Parallel** on the plan.
 4. **You should see** three subagents running at once, a Canvas updating as they report, then a merged branch with `POST /api/disputes/:id/resolve`, a **Resolve dispute** dialog for admins, and `[resolve-dispute]` tests.
 5. **Check:** `npm test && npm run test:e2e`. In the app, switch to **Dana Okafor (admin)**, open a dispute and resolve it.
-6. **Catch up:** `git checkout step-5-multitask`, then re-run the seed (the schema changed).
+6. **Catch up:** `git checkout step-5-multitask`, then `npx prisma generate && npx prisma db seed` and restart `npm run dev` (the schema changed).
 7. **Try it yourself:** run the plan without step 0 and see how much harder the merge gets.
 
 ### Step 6: Cloud Agents and Bugbot
@@ -162,13 +162,14 @@ Each step below has a summary. Follow the link for the full guide with every pro
 **Goal:** run work in the background and get project-aware reviews. **Start from:** `step-5-multitask`. **Full guide:** [docs/steps/step-6.md](docs/steps/step-6.md)
 
 1. **Before you start:** [enable Bugbot on your fork](#enable-bugbot-on-your-fork), and add `.cursor/BUGBOT.md` to the base branch of each PR you want reviewed (the guide has the commands).
-2. **Cloud Agent:** commit and push, select **Cloud** under the chat input, and paste the CSV export task from the guide (`GET /api/collections/export` plus an **Export CSV** link, with formula-injection-safe escaping and tests). From an existing local chat, use **Move to Cloud**.
-3. **Pick it up:** in the Agents Window use **Move to Local**, or check out the agent's branch.
-4. **Bugbot:** on the PR from step 3 (and the cloud agent's PR), comment `bugbot run` (add `verbose=true` to see the rules it loaded).
-5. **You should see** a cloud agent PR with the CSV export, and Bugbot comments that refer to the guidance in `.cursor/BUGBOT.md`.
-6. **Check:** `npm test`, and **Export CSV** on `/collections` downloads `collections-YYYY-MM-DD.csv`.
-7. **Catch up:** `git checkout step-6-cloud-bugbot`.
-8. **Try it yourself:** start a homework issue in a cloud agent and let Bugbot review it.
+2. **Open** `.cursor/BUGBOT.md` (from `step-6-cloud-bugbot`) and [cursor.com/agents](https://cursor.com/agents).
+3. **Cloud Agent:** commit and push, select **Cloud** under the chat input, and paste the CSV export task from the guide (`GET /api/collections/export` plus an **Export CSV** link, with formula-injection-safe escaping and tests). From an existing local chat, use **Move to Cloud**.
+4. **Pick it up:** in the Agents Window use **Move to Local**, or check out the agent's branch.
+5. **Bugbot:** on the PR from step 3 (or, if you caught up past step 3, the cloud agent's PR), comment `bugbot run` (add `verbose=true` to see the rules it loaded).
+6. **You should see** a cloud agent PR with the CSV export, and Bugbot comments that refer to the guidance in `.cursor/BUGBOT.md`.
+7. **Check:** `npm test`, and **Export CSV** on `/collections` downloads `collections-YYYY-MM-DD.csv`.
+8. **Catch up:** `git checkout step-6-cloud-bugbot`.
+9. **Try it yourself:** start a homework issue in a cloud agent and let Bugbot review it.
 
 ## Connect the GitHub MCP server
 
@@ -217,7 +218,7 @@ Then run **Developer: Reload Window** and confirm the plugin in **Customize**. C
 
 1. Go to [cursor.com/dashboard](https://cursor.com/dashboard) → **Integrations** and connect **GitHub**. Grant the Cursor app access to your fork.
 2. Open **Bugbot** (under **Automations**) and turn it on for `<you>/cursor-201-workshop`.
-3. Make sure `.cursor/BUGBOT.md` is on the PR's **base branch** (the branch it merges into). Bugbot reads it from there, not from the PR itself.
+3. Make sure `.cursor/BUGBOT.md` is on the PR's **base branch** (the branch it merges into). Bugbot reads it from there, not from the PR itself. The file is on `step-6-cloud-bugbot`; copy it to another branch with `git checkout origin/step-6-cloud-bugbot -- .cursor/BUGBOT.md`.
 4. Open or update a PR, or comment `bugbot run` on an existing one. Add `verbose=true` to list the rules it used.
 
 Bugbot needs a paid plan. On individual plans it reviews PRs you author. On Teams and Enterprise, an admin may need to enable the repository.
@@ -239,7 +240,7 @@ Use **Acting as** in the header to switch between **Priya Shah (viewer)**, **Mar
 
 Under the hood: money is integer minor units with a currency code; invoice and dispute statuses are explicit state machines in `lib/domain/`; services in `lib/services/` own transactions, permissions and the audit log; zod validates every API input; and every error has the same shape. Read [docs/architecture.md](docs/architecture.md) for the full picture.
 
-On `main` you'll find two things left in on purpose:
+On `main` you'll find two things left in on purpose (the bug is fixed from `step-3-mcp-plugin`; the feature is built from `step-5-multitask`):
 
 - **A bug:** filtering the invoices list by status doesn't work. Step 3 fixes it. Two tests named `[filter-bug] ...` fail until then.
 - **An unbuilt feature:** resolving a dispute. Step 5 builds it from [`.cursor/plans/resolve-dispute.md`](.cursor/plans/resolve-dispute.md).
@@ -261,7 +262,7 @@ Expected results: on `main`, `step-1-context` and `step-2-rules-skills`, exactly
 
 ## Troubleshooting
 
-**Reset the database.** `npx prisma db seed` deletes `prisma/dev.db` and rebuilds it from the current branch's schema. Run it after switching branches, after a schema change, or if the data looks wrong. If you see `no such table` or `no such column`, you skipped this.
+**Reset the database.** `npx prisma db seed` deletes `prisma/dev.db` and rebuilds it from the current branch's schema. Run it after switching branches, after a schema change, or if the data looks wrong. If you see `no such table` or `no such column`, you skipped this. After a schema change (for example switching to or from `step-5-multitask`), run `npx prisma generate` first.
 
 **The app still shows old data, or errors, after re-seeding or switching branches.** Restart `npm run dev`. A running server keeps the old database file open and keeps using the Prisma client it started with, so it won't see a new database or a regenerated client until it restarts.
 
