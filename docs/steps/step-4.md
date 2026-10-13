@@ -4,13 +4,13 @@
 
 ## Goal
 
-Choose a model on purpose. Fast models are great for small, well-specified edits; frontier models earn their keep on ambiguous, multi-file reasoning; **Auto** picks for you. There's no code in this step. The finished branch adds [`docs/model-selection.md`](../model-selection.md), a one-page guide you can share with your team.
+Choose a model on purpose. Fast models are great for small, well-specified edits; frontier models earn their keep on ambiguous, multi-file reasoning; **Auto** picks for you. There's no code in this step. The finished branch adds [`docs/model-selection.md`](https://github.com/agrimsingh/cursor-201-workshop/blob/step-4-models/docs/model-selection.md), a one-page guide you can share with your team.
 
 ## Open in Cursor
 
 - The **model picker** at the bottom of the chat input (or `Cmd+/` / `Ctrl+/` to cycle models).
 - **Cursor Settings → Models** for your default model.
-- [`docs/model-selection.md`](../model-selection.md) on the `step-4-models` branch (or read it on GitHub).
+- [`docs/model-selection.md`](https://github.com/agrimsingh/cursor-201-workshop/blob/step-4-models/docs/model-selection.md) on the `step-4-models` branch (or read it on GitHub).
 
 ## Do it
 
@@ -39,7 +39,7 @@ For each run, note how long it took, how many follow-ups you needed, and whether
 
 ## Check it worked
 
-There's nothing to test. Read [`docs/model-selection.md`](../model-selection.md) and compare its guidance with what you just saw.
+There's nothing to test. Read [`docs/model-selection.md`](https://github.com/agrimsingh/cursor-201-workshop/blob/step-4-models/docs/model-selection.md) (or locally: `git show origin/step-4-models:docs/model-selection.md`) and compare its guidance with what you just saw.
 
 ## Catch up
 
