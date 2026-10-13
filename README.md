@@ -1,15 +1,15 @@
 # Cursor 201 workshop: Tally
 
-> **You're on `step-2-rules-skills`**: the finished state of [Step 2: Rules and skills](docs/steps/step-2.md). Includes step 1.
+> **You're on `step-3-mcp-plugin`**: the finished state of [Step 3: MCPs and the plugin marketplace](docs/steps/step-3.md). Includes steps 1 and 2.
 >
 > **What changed in this step**
 >
-> - `.cursor/rules/api-conventions.mdc`: API conventions (handlers, zod, error shape, Prisma only through `lib/db` in services, permissions, transactions, audit, integer money), attached automatically for `app/api`, `lib/services`, `lib/validation` and `lib/domain`.
-> - `.cursor/skills/create-api/SKILL.md`: a project skill (`/create-api`) that walks through adding an endpoint end to end.
-> - `GET /api/customers/:id/statement`, built by following the skill: `lib/domain/statement.ts` (pure, unit tested), `lib/validation/customers.ts`, `getCustomerStatement` in `lib/services/customers.ts`, the route, integration tests and a row in `docs/architecture.md`.
-> - Still on purpose: the `[filter-bug]` tests fail (fixed in step 3) and resolving disputes is unbuilt (step 5).
+> - `.cursor/mcp.json` connects the **GitHub MCP server**. It reads your token from `${env:GITHUB_PERSONAL_ACCESS_TOKEN}`, so no secret is stored in the repo ([how to set it up](#connect-the-github-mcp-server)).
+> - The filter bug is fixed. The invoices page now sends `?status=` (`lib/client/invoice-list-params.ts`), which is what `GET /api/invoices` validates. The fix was made by the [bug-fix plugin](plugins/bug-fix/) (`/fix-issue`) on a `fix/issue-1-...` branch and merged as a pull request.
+> - Both `[filter-bug]` tests pass, and `npm test` and `npm run test:e2e` are fully green from here on.
+> - Still on purpose: resolving disputes is unbuilt (step 5).
 >
-> **Next:** [Step 3: MCPs and the plugin marketplace](docs/steps/step-3.md), starting from this branch. Re-run `npx prisma db seed` after switching branches.
+> **Next:** [Step 4: Model selection](docs/steps/step-4.md), starting from this branch.
 
 A hands-on workshop for getting more out of Cursor on a real codebase. You'll work on **Tally**, a small accounts-receivable console for a B2B company, and practise six techniques: managing context, rules and skills, MCPs and plugins, model selection, parallel subagents, and Cloud Agents with Bugbot.
 
