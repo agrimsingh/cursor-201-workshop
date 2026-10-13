@@ -4,19 +4,19 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormError } from "@/components/ui/dialog";
 import { apiRequest, errorMessage } from "@/lib/client/api";
-import type { DisputeEvent } from "@/lib/domain/dispute-status";
+import type { DisputeReviewEvent } from "@/lib/domain/dispute-status";
 
-const LABELS: Record<DisputeEvent, string> = {
+const LABELS: Record<DisputeReviewEvent, string> = {
   start_review: "Start review",
   withdraw: "Mark withdrawn",
 };
 
-export function DisputeActions({ disputeId, actions }: { disputeId: string; actions: DisputeEvent[] }) {
+export function DisputeActions({ disputeId, actions }: { disputeId: string; actions: DisputeReviewEvent[] }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function run(action: DisputeEvent) {
+  async function run(action: DisputeReviewEvent) {
     setBusy(true);
     setError(null);
     try {
