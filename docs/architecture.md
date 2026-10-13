@@ -33,7 +33,7 @@ lib/db.ts       the one PrismaClient
 
 | Folder | What lives there | Rules |
 | --- | --- | --- |
-| `lib/domain/` | `invoice-status.ts`, `dispute-status.ts`, `allocation.ts`, `credit-notes.ts`, `aging.ts`, `permissions.ts`, `audit.ts`, `errors.ts`, `dates.ts` | Pure functions. No Prisma, no Next.js, no I/O. Throws `DomainError`. Fully unit tested. |
+| `lib/domain/` | `invoice-status.ts`, `dispute-status.ts`, `allocation.ts`, `credit-notes.ts`, `aging.ts`, `permissions.ts`, `audit.ts`, `statement.ts`, `errors.ts`, `dates.ts` | Pure functions. No Prisma, no Next.js, no I/O. Throws `DomainError`. Fully unit tested. |
 | `lib/services/` | One module per aggregate: `invoices.ts`, `payments.ts`, `credit-notes.ts`, `disputes.ts`, `reports.ts`, `customers.ts`, `audit.ts` | The only code that touches `db`. Every write runs in `db.$transaction`, checks `assertCan(actor, ...)`, and calls `recordAudit(tx, ...)`. |
 | `lib/validation/` | Zod schemas per resource | Route handlers parse **all** input with these. Amounts are integer minor units. |
 | `lib/http/` | `route.ts` (`handle`, `ok`, `okList`, `created`, `parseJson`, `parseQuery`, `parseParams`), `errors.ts` | Every handler is wrapped in `handle()` so thrown errors become the standard error shape. |
