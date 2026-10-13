@@ -1,17 +1,13 @@
 # Cursor 201 workshop: Tally
 
-> **You're on `step-5-multitask`**: the finished state of [Step 5: Parallelizing](docs/steps/step-5.md). Includes steps 1 to 4.
+> **You're on `step-6-cloud-bugbot`**: the finished state of [Step 6: Cloud Agents and Bugbot](docs/steps/step-6.md) and of the whole workshop. Includes steps 1 to 5.
 >
 > **What changed in this step**
 >
-> - **Resolve a dispute** is built from [`.cursor/plans/resolve-dispute.md`](.cursor/plans/resolve-dispute.md), as a shared contract commit plus three workstreams that ran in parallel in separate worktrees and were merged in the order A → B → C:
->   - **A (API + Prisma):** dispute resolution fields and a credit-note link in `prisma/schema.prisma`, a `resolve` transition and `planDisputeResolution` in `lib/domain/dispute-status.ts`, `resolveDispute` in `lib/services/disputes.ts`, and `POST /api/disputes/:id/resolve` (admin only).
->   - **B (UI):** a **Resolve dispute** dialog and a **Resolution** section on `/disputes/[id]`.
->   - **C (tests + audit):** `[resolve-dispute]` unit, integration and e2e tests, and "Resolved (accepted)" in the audit trail.
-> - `.cursor/agents/reviewer.md` (read-only review against the rules) and `.cursor/agents/verifier.md` (runs the checks and confirms the plan's behaviour table). Their findings were fixed in the last commit.
-> - The schema changed: run `npx prisma generate && npx prisma db seed` and restart `npm run dev` after switching to or from this branch.
+> - [`.cursor/BUGBOT.md`](.cursor/BUGBOT.md): project review guidance for Bugbot (integer money, state machines, services with permissions, transactions and audit, the API boundary, CSV formula injection, tests, secrets). Bugbot reads it from each PR's base branch.
+> - **CSV export of the collections queue**, built by a Cloud Agent from the prompt in the step guide and picked up locally: `GET /api/collections/export` (`text/csv`, `collections-YYYY-MM-DD.csv`), a formula-injection-safe `lib/csv.ts`, an **Export CSV** link on `/collections` (viewers too), plus unit, integration and e2e tests.
 >
-> **Next:** [Step 6: Cloud Agents and Bugbot](docs/steps/step-6.md), starting from this branch.
+> **Next:** keep building with the [homework](#keep-building).
 
 A hands-on workshop for getting more out of Cursor on a real codebase. You'll work on **Tally**, a small accounts-receivable console for a B2B company, and practise six techniques: managing context, rules and skills, MCPs and plugins, model selection, parallel subagents, and Cloud Agents with Bugbot.
 
