@@ -5,13 +5,14 @@
 > **What changed in this step**
 >
 > - **Resolve a dispute** is built from [`.cursor/plans/resolve-dispute.md`](.cursor/plans/resolve-dispute.md), as a shared contract commit plus three workstreams that ran in parallel in separate worktrees and were merged in the order A → B → C:
->   - **A (API + Prisma):** dispute resolution fields and a credit-note link in `prisma/schema.prisma`, a `resolve` transition and `planDisputeResolution` in `lib/domain/dispute-status.ts`, `resolveDispute` in `lib/services/disputes.ts`, and `POST /api/disputes/:id/resolve` (admin only).
+>   - **Step 0 (contract):** resolution fields and a credit-note link in `prisma/schema.prisma`, the `resolved` status and review-event types, the `disputes:resolve` capability (admin only), the `dispute.resolved` audit action and `resolveDisputeSchema`.
+>   - **A (API):** a `resolve` transition and `planDisputeResolution` in `lib/domain/dispute-status.ts`, `resolveDispute` in `lib/services/disputes.ts`, and `POST /api/disputes/:id/resolve`.
 >   - **B (UI):** a **Resolve dispute** dialog and a **Resolution** section on `/disputes/[id]`.
 >   - **C (tests + audit):** `[resolve-dispute]` unit, integration and e2e tests, and "Resolved (accepted)" in the audit trail.
-> - `.cursor/agents/reviewer.md` (read-only review against the rules) and `.cursor/agents/verifier.md` (runs the checks and confirms the plan's behaviour table). Their findings were fixed in the last commit.
-> - The schema changed: run `npx prisma generate && npx prisma db seed` and restart `npm run dev` after switching to or from this branch.
+> - `.cursor/agents/reviewer.md` (read-only review against the rules) and `.cursor/agents/verifier.md` (runs the checks and confirms the plan's behaviour table). Their findings were fixed in a follow-up commit.
+> - `docs/architecture.md` gains the dispute state-machine table, the resolve endpoint and a "Resolve disputes" role row; the plan's todos are marked completed.
 >
-> **Next:** [Step 6: Cloud Agents and Bugbot](docs/steps/step-6.md), starting from this branch.
+> **Next:** [Step 6: Cloud Agents and Bugbot](docs/steps/step-6.md), starting from this branch. The schema changed in this step: after switching branches, run `npx prisma generate && npx prisma db seed` and restart `npm run dev`.
 
 A hands-on workshop for getting more out of Cursor on a real codebase. You'll work on **Tally**, a small accounts-receivable console for a B2B company, and practise six techniques: managing context, rules and skills, MCPs and plugins, model selection, parallel subagents, and Cloud Agents with Bugbot.
 
