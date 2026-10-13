@@ -9,7 +9,7 @@
 > - Both `[filter-bug]` tests pass, and `npm test` and `npm run test:e2e` are fully green from here on.
 > - Still on purpose: resolving disputes is unbuilt (step 5).
 >
-> **Next:** [Step 4: Model selection](docs/steps/step-4.md), starting from this branch.
+> **Next:** [Step 4: Model selection](docs/steps/step-4.md), starting from this branch. After switching branches, run `npx prisma generate && npx prisma db seed` and restart `npm run dev`.
 
 A hands-on workshop for getting more out of Cursor on a real codebase. You'll work on **Tally**, a small accounts-receivable console for a B2B company, and practise six techniques: managing context, rules and skills, MCPs and plugins, model selection, parallel subagents, and Cloud Agents with Bugbot.
 
