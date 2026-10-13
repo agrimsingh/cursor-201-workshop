@@ -72,6 +72,8 @@ As **Marcus Lee (agent)**, the **Resolve dispute** button is not shown, and the 
 
 ## Catch up
 
+If you have local edits, put them aside first with `git stash` (or discard them with `git checkout -- . && git clean -fd`).
+
 ```bash
 git checkout step-5-multitask
 npm install && npx prisma generate && npx prisma db seed

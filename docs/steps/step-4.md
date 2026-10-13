@@ -43,6 +43,8 @@ There's nothing to test. Read [`docs/model-selection.md`](../model-selection.md)
 
 ## Catch up
 
+If you have local edits, put them aside first with `git stash` (or discard them with `git checkout -- . && git clean -fd`).
+
 ```bash
 git checkout step-4-models
 ```

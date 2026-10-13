@@ -100,6 +100,8 @@ The new statement tests pass. The only failing test is still `[filter-bug] ...`.
 
 ## Catch up
 
+If you have local edits, put them aside first with `git stash` (or discard them with `git checkout -- . && git clean -fd`).
+
 ```bash
 git checkout step-2-rules-skills
 npm install && npx prisma generate && npx prisma db seed
