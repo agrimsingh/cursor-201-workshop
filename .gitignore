@@ -1,0 +1,33 @@
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/.next-e2e/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# prisma
+/lib/generated/
+/prisma/*.db
+/prisma/*.db-journal
+/prisma/*.db-wal
+/prisma/*.db-shm
+
+# tests
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/.verify-steps/
+
+# env files (Tally does not need any; keep secrets out of git)
+.env
+.env*.local
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+.vercel
