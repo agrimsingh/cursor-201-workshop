@@ -1,0 +1,11 @@
+{
+  "name": "bug-fix",
+  "version": "1.0.0",
+  "description": "Takes a GitHub issue from report to pull request: reads the issue, reproduces it with a failing test, fixes the root cause, runs the checks and opens a PR that closes the issue.",
+  "author": {
+    "name": "Agrim Singh"
+  },
+  "repository": "https://github.com/agrimsingh/cursor-201-workshop",
+  "license": "MIT",
+  "keywords": ["bugs", "github", "issues", "testing", "pull-requests"]
+}

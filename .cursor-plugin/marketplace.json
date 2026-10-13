@@ -1,0 +1,16 @@
+{
+  "name": "cursor-201-workshop",
+  "owner": {
+    "name": "Agrim Singh"
+  },
+  "metadata": {
+    "description": "Plugins used in the Cursor 201 workshop."
+  },
+  "plugins": [
+    {
+      "name": "bug-fix",
+      "source": "plugins/bug-fix",
+      "description": "Takes a GitHub issue from report to pull request with a failing test first."
+    }
+  ]
+}
