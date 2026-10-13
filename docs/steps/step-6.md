@@ -14,7 +14,19 @@ Hand a well-scoped task to a **Cloud Agent** so it runs on its own VM while you 
 
 ## Open in Cursor
 
-- `.cursor/BUGBOT.md` (copy it from the finished branch with `git checkout origin/step-6-cloud-bugbot -- .cursor/BUGBOT.md`, commit and push it to your fork's `main`). Bugbot reads it from the PR's base branch.
+- `.cursor/BUGBOT.md`: project-specific review guidance for Bugbot. Bugbot reads it from each **PR's base branch**, so add it to the branches your PRs target:
+
+  ```bash
+  # for the cloud agent's PR: the branch you're on now
+  git checkout origin/step-6-cloud-bugbot -- .cursor/BUGBOT.md
+  git commit -m "Add Bugbot review guidance" && git push
+
+  # for the step 3 PR, which targets step-2-rules-skills
+  git checkout step-2-rules-skills
+  git checkout origin/step-6-cloud-bugbot -- .cursor/BUGBOT.md
+  git commit -m "Add Bugbot review guidance" && git push
+  git checkout -
+  ```
 - The Agent chat, with **Cloud** selected in the dropdown under the input.
 - [cursor.com/agents](https://cursor.com/agents) to watch cloud agents from the browser.
 

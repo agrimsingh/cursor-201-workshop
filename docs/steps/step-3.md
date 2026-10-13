@@ -104,7 +104,7 @@ Use your issue number. Approve the GitHub tool calls as they come up.
 2. It runs the tests and finds the failing `[filter-bug]` test (or writes one).
 3. It traces the request: the invoices page builds its query string in `lib/client/invoice-list-params.ts` with `state=overdue`, but `GET /api/invoices` validates `status` with zod. Zod strips unknown keys, so the filter silently disappears and every invoice comes back.
 4. It fixes the mismatch, reruns lint, typecheck and tests, and commits on a `fix/issue-1-...` branch.
-5. It pushes the branch and opens a pull request on your fork with `Fixes #1` in the description.
+5. It pushes the branch and opens a pull request on your fork, targeting the branch you started from (`step-2-rules-skills`), with `Fixes #1` in the description.
 
 ## Check it worked
 
