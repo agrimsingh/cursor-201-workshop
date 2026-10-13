@@ -1,0 +1,54 @@
+---
+description: Tally API conventions for route handlers, services and zod schemas. Use when adding or changing anything under app/api, lib/services or lib/validation.
+globs: app/api/**,lib/services/**,lib/validation/**
+alwaysApply: false
+---
+
+# Tally API conventions
+
+Layers point downwards only: `app/api` → `lib/services` → `lib/domain`. See `docs/architecture.md`.
+
+## Route handlers (`app/api/**/route.ts`)
+
+- Export `GET`/`POST`/`PUT` as `handle(async (request, context) => ...)` from `lib/http/route.ts`. Dynamic segments: `handle<{ id: string }>(...)`.
+- Parse **every** input with a zod schema from `lib/validation`:
+  - params: `await parseParams(context, idParamsSchema)`
+  - query string: `parseQuery(request, someQuerySchema)`
+  - body: `await parseJson(request, someBodySchema)`
+- Resolve the user with `await actorFromRequest(request)` (`lib/auth/session.ts`) and pass the `Actor` to the service whenever it checks permissions (every write).
+- Call exactly **one** function in `lib/services`, then return `ok(data)`, `created(data)` (201) or `okList(data, meta)`.
+- Keep handlers thin: no Prisma, no business rules, no `try/catch`, no `NextResponse.json` with a hand-built body.
+
+```ts
+export const POST = handle(async (request) => {
+  const input = await parseJson(request, recordPaymentSchema);
+  const actor = await actorFromRequest(request);
+  return created(await recordPayment(actor, input));
+});
+```
+
+## Errors
+
+- The only error shape is `{ "error": { "code", "message", "details"? } }`, produced by `toErrorResponse` in `lib/http/errors.ts` (called by `handle`).
+- Throw, don't return: `NotFoundError`, `ForbiddenError`, `DomainError` (`lib/domain/errors.ts`) or `ApiError` (`lib/http/errors.ts`). `ZodError` becomes `VALIDATION_FAILED` automatically.
+- Codes → HTTP: `BAD_REQUEST`/`VALIDATION_FAILED` 400, `FORBIDDEN` 403, `NOT_FOUND` 404, `INVALID_TRANSITION` 409, `BUSINESS_RULE`/`CURRENCY_MISMATCH`/`OVER_ALLOCATION` 422. Don't invent new codes.
+
+## Services (`lib/services/**`)
+
+- The only layer that touches the database, and only via `import { db } from "@/lib/db"`. Never `new PrismaClient()`, and never import `db` or `@/lib/generated/prisma` in `app/` or `components/`.
+- Permissions: call `assertCan(actor, "<capability>")` from `lib/domain/permissions.ts` first.
+- Writes: run inside `db.$transaction(async (tx) => ...)`, use `tx` (not `db`) inside it, and call `recordAudit(tx, { actor, entityType, entityId, action, before, after })` for every state change.
+- Missing records: `throw new NotFoundError("Customer", id)`.
+
+## Domain (`lib/domain/**`)
+
+- State transitions, amounts and guards are pure functions here: no Prisma, no Next.js, no I/O, no clock reads (take `asOf: Date`). Unit test them in `tests/unit`.
+
+## Validation (`lib/validation/**`)
+
+- Reuse `lib/validation/common.ts`: `idSchema`, `idParamsSchema`, `currencySchema`, `positiveMinorSchema`, `dateSchema`, `pageSchema`, `pageSizeSchema`, `optionalQueryString`.
+- Export the inferred type next to the schema: `export type XInput = z.infer<typeof xSchema>`.
+
+## Money
+
+- Always integer minor units in a `*Minor` field plus a `currency` code (`CURRENCIES` in `lib/money.ts`). Never floats, never `toFixed`, never add different currencies together.
