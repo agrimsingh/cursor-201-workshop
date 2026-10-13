@@ -1,10 +1,12 @@
 import { db, type Tx } from "@/lib/db";
 import type { Prisma } from "@/lib/generated/prisma/client";
+import { daysPastDue } from "@/lib/domain/aging";
 import { ACTIVE_DISPUTE_STATUSES } from "@/lib/domain/dispute-status";
 import { DomainError, NotFoundError } from "@/lib/domain/errors";
 import {
   asInvoiceStatus,
   invoiceBalance,
+  isOpenInvoice,
   isPastDue,
   transitionInvoice,
   type InvoiceState,
@@ -54,6 +56,8 @@ export interface InvoiceListItem {
   dueDate: string;
   totalMinor: number;
   balanceMinor: number;
+  /** Whole days past the due date for open invoices; 0 when not yet due or not open. */
+  daysPastDue: number;
   inDispute: boolean;
 }
 
@@ -63,7 +67,7 @@ function orderByFor(query: InvoiceListQuery): Prisma.InvoiceOrderByWithRelationI
   return [primary, { number: "asc" }];
 }
 
-export async function listInvoices(query: InvoiceListQuery) {
+export async function listInvoices(query: InvoiceListQuery, asOf = new Date()) {
   const where: Prisma.InvoiceWhereInput = {
     ...(query.status ? { status: query.status } : {}),
     ...(query.customerId ? { customerId: query.customerId } : {}),
@@ -85,18 +89,22 @@ export async function listInvoices(query: InvoiceListQuery) {
     }),
     db.invoice.count({ where }),
   ]);
-  const data: InvoiceListItem[] = rows.map((row) => ({
-    id: row.id,
-    number: row.number,
-    customer: row.customer,
-    currency: row.currency,
-    status: asInvoiceStatus(row.status),
-    issueDate: row.issueDate.toISOString(),
-    dueDate: row.dueDate.toISOString(),
-    totalMinor: row.totalMinor,
-    balanceMinor: row.balanceMinor,
-    inDispute: row.disputes.length > 0,
-  }));
+  const data: InvoiceListItem[] = rows.map((row) => {
+    const status = asInvoiceStatus(row.status);
+    return {
+      id: row.id,
+      number: row.number,
+      customer: row.customer,
+      currency: row.currency,
+      status,
+      issueDate: row.issueDate.toISOString(),
+      dueDate: row.dueDate.toISOString(),
+      totalMinor: row.totalMinor,
+      balanceMinor: row.balanceMinor,
+      daysPastDue: isOpenInvoice(status) ? Math.max(0, daysPastDue(row.dueDate, asOf)) : 0,
+      inDispute: row.disputes.length > 0,
+    };
+  });
   return {
     data,
     meta: { page: query.page, pageSize: query.pageSize, total, totalPages: Math.max(1, Math.ceil(total / query.pageSize)) },

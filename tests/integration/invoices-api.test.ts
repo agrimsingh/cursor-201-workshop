@@ -57,6 +57,22 @@ describe("GET /api/invoices", () => {
     expect(body.meta.total).toBe(overdue);
   });
 
+  it("reports daysPastDue for overdue invoices and 0 for paid ones", async () => {
+    const list = async (status: string) =>
+      (
+        await callRoute<Record<string, never>, ListBody>(listInvoices, {
+          path: "/api/invoices",
+          query: { status, pageSize: "100" },
+        })
+      ).body.data;
+    const overdue = await list("overdue");
+    const paid = await list("paid");
+    expect(overdue.length).toBeGreaterThan(0);
+    expect(paid.length).toBeGreaterThan(0);
+    expect(overdue.every((invoice) => invoice.daysPastDue > 0)).toBe(true);
+    expect(paid.every((invoice) => invoice.daysPastDue === 0)).toBe(true);
+  });
+
   it("filters by currency and search text", async () => {
     const { body } = await callRoute<Record<string, never>, ListBody>(listInvoices, {
       path: "/api/invoices",

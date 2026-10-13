@@ -21,6 +21,7 @@ const COLUMNS: { field: InvoiceSortField | null; label: string; align?: "right" 
   { field: null, label: "Status" },
   { field: "issueDate", label: "Issued" },
   { field: "dueDate", label: "Due" },
+  { field: null, label: "Days late", align: "right" },
   { field: "totalMinor", label: "Total", align: "right" },
   { field: "balanceMinor", label: "Balance", align: "right" },
 ];
@@ -169,6 +170,12 @@ export function InvoiceList() {
                     </td>
                     <td className="text-slate-600">{formatDate(invoice.issueDate)}</td>
                     <td className="text-slate-600">{formatDate(invoice.dueDate)}</td>
+                    <td
+                      data-testid="days-late"
+                      className={`text-right tabular-nums ${invoice.daysPastDue > 60 ? "font-medium text-rose-700" : "text-slate-600"}`}
+                    >
+                      {invoice.daysPastDue > 0 ? invoice.daysPastDue : "—"}
+                    </td>
                     <td className="text-right">
                       <Money minor={invoice.totalMinor} currency={invoice.currency} />
                     </td>
