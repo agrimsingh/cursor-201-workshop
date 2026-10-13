@@ -1,15 +1,15 @@
 # Cursor 201 workshop: Tally
 
-> **You're on `step-1-context`**: the finished state of [Step 1: Context 60/40](docs/steps/step-1.md).
+> **You're on `step-2-rules-skills`**: the finished state of [Step 2: Rules and skills](docs/steps/step-2.md). Includes step 1.
 >
 > **What changed in this step**
 >
-> - The invoices list has a **Days late** column, computed on the server as `daysPastDue` in `lib/services/invoices.ts#listInvoices` (whole days past due for open invoices, otherwise 0).
-> - `components/invoices/invoice-list.tsx` renders it after **Due** ("—" for 0, rose for 61+ days).
-> - A new integration test checks `daysPastDue` for overdue and paid invoices.
+> - `.cursor/rules/api-conventions.mdc`: API conventions (handlers, zod, error shape, Prisma only through `lib/db` in services, permissions, transactions, audit, integer money), attached automatically for `app/api`, `lib/services`, `lib/validation` and `lib/domain`.
+> - `.cursor/skills/create-api/SKILL.md`: a project skill (`/create-api`) that walks through adding an endpoint end to end.
+> - `GET /api/customers/:id/statement`, built by following the skill: `lib/domain/statement.ts` (pure, unit tested), `lib/validation/customers.ts`, `getCustomerStatement` in `lib/services/customers.ts`, the route, integration tests and a row in `docs/architecture.md`.
 > - Still on purpose: the `[filter-bug]` tests fail (fixed in step 3) and resolving disputes is unbuilt (step 5).
 >
-> **Next:** [Step 2: Rules and skills](docs/steps/step-2.md), starting from this branch. Re-run `npx prisma db seed` after switching branches.
+> **Next:** [Step 3: MCPs and the plugin marketplace](docs/steps/step-3.md), starting from this branch. Re-run `npx prisma db seed` after switching branches.
 
 A hands-on workshop for getting more out of Cursor on a real codebase. You'll work on **Tally**, a small accounts-receivable console for a B2B company, and practise six techniques: managing context, rules and skills, MCPs and plugins, model selection, parallel subagents, and Cloud Agents with Bugbot.
 

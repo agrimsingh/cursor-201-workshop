@@ -1,6 +1,6 @@
 ---
-description: Tally API conventions for route handlers, services and zod schemas. Use when adding or changing anything under app/api, lib/services or lib/validation.
-globs: app/api/**,lib/services/**,lib/validation/**
+description: Tally API conventions for route handlers, services, zod schemas and domain rules. Use when adding or changing anything under app/api, lib/services, lib/validation or lib/domain.
+globs: app/api/**,lib/services/**,lib/validation/**,lib/domain/**
 alwaysApply: false
 ---
 
