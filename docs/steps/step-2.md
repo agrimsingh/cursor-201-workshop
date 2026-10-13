@@ -2,8 +2,6 @@
 
 **Branch when you start:** `step-1-context` · **Finished state:** `step-2-rules-skills`
 
-Part 3 is the longest: the agent writes domain code, a schema, a service, a route, tests and docs. Start it as soon as the skill exists.
-
 ## Goal
 
 Teach Cursor your team's conventions once, instead of repeating them in every prompt.
@@ -76,7 +74,7 @@ Run that only if `.cursor/skills/create-api` doesn't exist yet; otherwise `mv` n
 
 ### 3. Use the skill to build an endpoint
 
-Start a **new chat** so you can see the rule and skill doing the work:
+This part takes the longest (domain code, a schema, a service, a route, tests and docs), so start it as soon as the skill exists. Start a **new chat** so you can see the rule and skill doing the work:
 
 ```text
 /create-api GET /api/customers/:id/statement
