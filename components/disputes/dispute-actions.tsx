@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ResolveDisputeDialog } from "@/components/disputes/resolve-dispute-dialog";
 import { FormError } from "@/components/ui/dialog";
 import { apiRequest, errorMessage } from "@/lib/client/api";
 import type { DisputeReviewEvent } from "@/lib/domain/dispute-status";
@@ -11,10 +12,19 @@ const LABELS: Record<DisputeReviewEvent, string> = {
   withdraw: "Mark withdrawn",
 };
 
-export function DisputeActions({ disputeId, actions }: { disputeId: string; actions: DisputeReviewEvent[] }) {
+export function DisputeActions({
+  disputeId,
+  actions,
+  resolve,
+}: {
+  disputeId: string;
+  actions: DisputeReviewEvent[];
+  resolve: { currency: string; creditMinor: number } | null;
+}) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resolving, setResolving] = useState(false);
 
   async function run(action: DisputeReviewEvent) {
     setBusy(true);
@@ -29,10 +39,15 @@ export function DisputeActions({ disputeId, actions }: { disputeId: string; acti
     }
   }
 
-  if (actions.length === 0) return null;
+  if (actions.length === 0 && !resolve) return null;
   return (
     <div className="flex flex-col items-end gap-2">
       <div className="flex gap-2">
+        {resolve ? (
+          <button type="button" className="btn-primary" disabled={busy} onClick={() => setResolving(true)}>
+            Resolve dispute
+          </button>
+        ) : null}
         {actions.map((action) => (
           <button
             key={action}
@@ -46,6 +61,15 @@ export function DisputeActions({ disputeId, actions }: { disputeId: string; acti
         ))}
       </div>
       <FormError message={error} />
+      {resolve ? (
+        <ResolveDisputeDialog
+          open={resolving}
+          onClose={() => setResolving(false)}
+          disputeId={disputeId}
+          currency={resolve.currency}
+          creditMinor={resolve.creditMinor}
+        />
+      ) : null}
     </div>
   );
 }
