@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DISPUTE_EVENTS, DISPUTE_REASONS, DISPUTE_STATUSES } from "@/lib/domain/dispute-status";
+import { DISPUTE_EVENTS, DISPUTE_REASONS, DISPUTE_RESOLUTIONS, DISPUTE_STATUSES } from "@/lib/domain/dispute-status";
 import { idSchema, pageSchema, pageSizeSchema, positiveMinorSchema } from "@/lib/validation/common";
 
 export const openDisputeSchema = z.object({
@@ -19,3 +19,9 @@ export const disputeListQuerySchema = z.object({
   page: pageSchema,
   pageSize: pageSizeSchema,
 });
+
+export const resolveDisputeSchema = z.object({
+  resolution: z.enum(DISPUTE_RESOLUTIONS),
+  note: z.string().trim().min(5).max(1000),
+});
+export type ResolveDisputeInput = z.infer<typeof resolveDisputeSchema>;

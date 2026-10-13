@@ -9,11 +9,14 @@ import { invoiceBalance, isOpenInvoice, type InvoiceState } from "@/lib/domain/i
 //
 // Resolving a dispute is not built yet: see .cursor/plans/resolve-dispute.md.
 
-export const DISPUTE_STATUSES = ["open", "under_review", "withdrawn"] as const;
+export const DISPUTE_STATUSES = ["open", "under_review", "withdrawn", "resolved"] as const;
 export type DisputeStatus = (typeof DISPUTE_STATUSES)[number];
 
 export const DISPUTE_EVENTS = ["start_review", "withdraw"] as const;
 export type DisputeEvent = (typeof DISPUTE_EVENTS)[number];
+
+export const DISPUTE_RESOLUTIONS = ["accepted", "rejected"] as const;
+export type DisputeResolution = (typeof DISPUTE_RESOLUTIONS)[number];
 
 export const DISPUTE_REASONS = ["pricing", "duplicate", "not_received", "quality", "other"] as const;
 export type DisputeReason = (typeof DISPUTE_REASONS)[number];
@@ -25,6 +28,7 @@ const TRANSITIONS: Record<DisputeStatus, Partial<Record<DisputeEvent, DisputeSta
   open: { start_review: "under_review", withdraw: "withdrawn" },
   under_review: { withdraw: "withdrawn" },
   withdrawn: {},
+  resolved: {},
 };
 
 export function isDisputeStatus(value: string): value is DisputeStatus {

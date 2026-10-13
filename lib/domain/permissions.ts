@@ -15,6 +15,7 @@ export const CAPABILITIES = [
   "credit_notes:issue",
   "disputes:open",
   "disputes:review",
+  "disputes:resolve",
   "audit:read",
 ] as const;
 export type Capability = (typeof CAPABILITIES)[number];

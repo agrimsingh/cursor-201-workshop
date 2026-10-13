@@ -14,6 +14,7 @@ export const AUDIT_ACTIONS = [
   "dispute.opened",
   "dispute.review_started",
   "dispute.withdrawn",
+  "dispute.resolved",
 ] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 
@@ -28,6 +29,7 @@ export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
   "dispute.opened": "Dispute opened",
   "dispute.review_started": "Review started",
   "dispute.withdrawn": "Dispute withdrawn",
+  "dispute.resolved": "Dispute resolved",
 };
 
 export function auditActionLabel(action: string): string {

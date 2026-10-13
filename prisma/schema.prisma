@@ -25,7 +25,8 @@ model User {
   auditEntries      AuditEntry[]
   paymentsRecorded  Payment[]
   creditNotesIssued CreditNote[]
-  disputesOpened    Dispute[]
+  disputesOpened    Dispute[] @relation("DisputeOpenedBy")
+  disputesResolved  Dispute[] @relation("DisputeResolvedBy")
 }
 
 model Customer {
@@ -129,6 +130,8 @@ model CreditNote {
   issuedById  String
   issuedBy    User     @relation(fields: [issuedById], references: [id])
   issuedAt    DateTime @default(now())
+  disputeId   String?  @unique
+  dispute     Dispute? @relation(fields: [disputeId], references: [id])
 }
 
 model Dispute {
@@ -143,9 +146,16 @@ model Dispute {
   currency    String
   amountMinor Int // amount the customer disputes, at most the invoice balance
   openedById  String
-  openedBy    User     @relation(fields: [openedById], references: [id])
+  openedBy    User     @relation("DisputeOpenedBy", fields: [openedById], references: [id])
   openedAt    DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  resolution     String? // accepted | rejected
+  resolutionNote String?
+  resolvedAt     DateTime?
+  resolvedById   String?
+  resolvedBy     User?       @relation("DisputeResolvedBy", fields: [resolvedById], references: [id])
+  creditNote     CreditNote?
 
   @@index([status])
 }

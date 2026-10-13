@@ -100,6 +100,8 @@ export async function getDisputeDetail(id: string) {
       customer: true,
       invoice: true,
       openedBy: { select: { name: true } },
+      resolvedBy: { select: { name: true } },
+      creditNote: true,
     },
   });
   if (!dispute) throw new NotFoundError("Dispute", id);
