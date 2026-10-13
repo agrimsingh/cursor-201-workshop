@@ -1,7 +1,7 @@
 ---
-name: "Homework 5: Collector assignment and "My queue""
+name: 'Homework 5: Collector assignment and "My queue"'
 about: "Collections queue follow-up from the Cursor 201 workshop"
-title: "Homework 5: Collector assignment and "My queue""
+title: 'Homework 5: Collector assignment and "My queue"'
 labels: ["homework"]
 ---
 

@@ -11,22 +11,23 @@ Hand a well-scoped task to a **Cloud Agent** so it runs on its own VM while you 
 - **Connect GitHub to Cursor:** [cursor.com/dashboard](https://cursor.com/dashboard) → **Integrations** → **GitHub**, and give the Cursor app access to your fork.
 - **Enable Bugbot on your fork:** in the dashboard, open **Bugbot** (under **Automations**) and switch it on for `<you>/cursor-201-workshop`. On individual plans, Bugbot reviews PRs you author. On Teams and Enterprise plans an admin may need to enable the repository for you.
 - Cloud Agents and Bugbot need a paid Cursor plan. Check which features your plan includes before the session.
-
-## Open in Cursor
-
-- `.cursor/BUGBOT.md`: project-specific review guidance for Bugbot. Bugbot reads it from each **PR's base branch**, so add it to the branches your PRs target:
+- **Add `.cursor/BUGBOT.md` to your PRs' base branches.** Bugbot reads it from each **PR's base branch**, so add it to the branches your PRs target:
 
   ```bash
   # for the cloud agent's PR: the branch you're on now
   git checkout origin/step-6-cloud-bugbot -- .cursor/BUGBOT.md
-  git commit -m "Add Bugbot review guidance" && git push
+  git commit -m "Add Bugbot review guidance" && git push origin HEAD
 
   # for the step 3 PR, which targets step-2-rules-skills
   git checkout step-2-rules-skills
   git checkout origin/step-6-cloud-bugbot -- .cursor/BUGBOT.md
-  git commit -m "Add Bugbot review guidance" && git push
+  git commit -m "Add Bugbot review guidance" && git push origin HEAD
   git checkout -
   ```
+
+## Open in Cursor
+
+- `.cursor/BUGBOT.md`: project-specific review guidance for Bugbot.
 - The Agent chat, with **Cloud** selected in the dropdown under the input.
 - [cursor.com/agents](https://cursor.com/agents) to watch cloud agents from the browser.
 
@@ -58,7 +59,7 @@ While the cloud agent works, carry on locally (for example, try a homework task)
 
 ### 3. Bugbot reviews the PR from step 3
 
-Open the pull request the bug-fix plugin created in step 3. If Bugbot hasn't reviewed it yet, comment:
+Open the pull request the bug-fix plugin created in step 3 (if you caught up instead of doing step 3, use the cloud agent's PR). If Bugbot hasn't reviewed it yet, comment:
 
 ```text
 bugbot run
@@ -94,5 +95,5 @@ npm run dev   # restart it if it was already running
 ## Try it yourself
 
 - Pick a [homework task](../homework.md), start it in a cloud agent from the GitHub issue (comment `@cursor` on the issue if your GitHub integration is connected), and let Bugbot review the result.
-- Add a rule to `.cursor/BUGBOT.md` that you care about, push it to `main` on your fork, and re-run Bugbot with `verbose=true` to see it picked up.
+- Add a rule to `.cursor/BUGBOT.md` that you care about, push it to your PR's base branch (for example `step-6-cloud-bugbot`), and re-run Bugbot with `verbose=true` to see it picked up.
 - Run `/review-bugbot` in a local chat before you push, to catch issues before Bugbot does.
