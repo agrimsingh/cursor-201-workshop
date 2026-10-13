@@ -52,7 +52,7 @@ Alternatives: open the plan, click **Build in Parallel**, or use `/canvas` to as
 
 ### 3. Try it in the app
 
-Switch to **Dana Okafor (admin)** in the header, open **Disputes**, open an active dispute and click **Resolve dispute**. Accept it and check that the invoice gets a credit note and a lower balance. Reject another one and check that its invoice is back on the **Collections** page.
+Switch to **Dana Okafor (admin)** in the header, open **Disputes**, open an active dispute and click **Resolve dispute**. Accept it and check that the invoice gets a credit note and a lower balance. Reject a dispute whose invoice is overdue and check that the invoice is back on the **Collections** page.
 
 ## What you should see
 

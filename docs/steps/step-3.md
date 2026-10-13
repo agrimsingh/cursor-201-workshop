@@ -16,6 +16,7 @@ The bug: on **Invoices**, filtering by **Status → Overdue** still lists every 
    git remote rename origin upstream
    git remote add origin https://github.com/<you>/cursor-201-workshop.git
    git fetch origin
+   git config checkout.defaultRemote origin
    ```
 
 2. **Turn on Issues** for the fork: **Settings → General → Features → Issues** (forks have Issues switched off by default).
