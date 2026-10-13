@@ -32,7 +32,7 @@ If you're unsure, start with **Auto**. Switch when you notice a pattern: lots of
 ## Patterns that work well
 
 - **Plan strong, build fast.** Use a frontier model in **Plan** mode to produce the plan (see `.cursor/plans/resolve-dispute.md`), then build each workstream with a faster model.
-- **Different model for review.** Give the `reviewer` subagent (`.cursor/agents/reviewer.md`) a different model from the one that wrote the code. Set `model:` in its frontmatter; `inherit` uses the parent's model.
+- **Different model for review.** Give the `reviewer` subagent (`.cursor/agents/reviewer.md`, added in step 5) a different model from the one that wrote the code. Set `model:` in its frontmatter; `inherit` uses the parent's model.
 - **Best of N for uncertain tasks.** When you aren't sure which approach is right, run the same prompt across two or three models with `/best-of-n` (each in its own worktree) and keep the best diff.
 - **Context beats horsepower.** A fast model with the right `@` files and a clear rule often beats a frontier model guessing across the whole repo. Fix context first (step 1), then reach for a bigger model.
 
