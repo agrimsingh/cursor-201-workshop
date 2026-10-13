@@ -77,6 +77,7 @@ If you have local edits, put them aside first with `git stash` (or discard them 
 ```bash
 git checkout step-5-multitask
 npm install && npx prisma generate && npx prisma db seed
+npm run dev   # restart it if it was already running
 ```
 
 The schema changed in this step, so re-run the seed whenever you switch to or from this branch.

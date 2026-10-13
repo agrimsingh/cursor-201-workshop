@@ -23,6 +23,7 @@ async function main() {
   console.log(
     `Seeded ${customers} customers, ${invoices} invoices, ${payments} payments, ${disputes} disputes, ${auditEntries} audit entries.`,
   );
+  console.log("If `npm run dev` is already running, restart it so it opens the new database.");
   await db.$disconnect();
 }
 

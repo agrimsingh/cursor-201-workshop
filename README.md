@@ -66,7 +66,7 @@ Every section of the workshop has a branch with its finished state, so you can f
 3. Open http://localhost:3000. You should see the Tally dashboard with balances in six currencies.
 4. Open the folder in Cursor (`cursor .`, or **File → Open Folder**).
 
-`npx prisma db seed` creates `prisma/dev.db` from scratch and loads about 47 invoices, 12 customers, payments, credit notes, disputes and their audit history. Dates are relative to today, so the aging buckets always look realistic. Re-run it whenever you want a clean slate or switch branches.
+`npx prisma db seed` creates `prisma/dev.db` from scratch and loads about 47 invoices, 12 customers, payments, credit notes, disputes and their audit history. Dates are relative to today, so the aging buckets always look realistic. Re-run it whenever you want a clean slate or switch branches. It replaces the database file, so **restart `npm run dev` afterwards** (`Ctrl+C`, then `npm run dev`); a running server keeps reading the old file.
 
 Optional, for the end-to-end tests: `npx playwright install chromium`.
 
@@ -84,10 +84,11 @@ Each branch is the **finished** state of that section and includes everything be
 | 5 | `step-5-multitask` | Build "resolve a dispute" with `/multitask`, three subagents in worktrees, a Canvas and a reviewer subagent | `git checkout step-5-multitask` |
 | 6 | `step-6-cloud-bugbot` | Hand a CSV export to a Cloud Agent, pick it up locally, and have Bugbot review your PRs | `git checkout step-6-cloud-bugbot` |
 
-If you have local edits, put them aside first with `git stash` (or discard them with `git checkout -- . && git clean -fd`). After switching branches, run:
+If you have local edits, put them aside first with `git stash` (or discard them with `git checkout -- . && git clean -fd`). After switching branches, stop `npm run dev` (`Ctrl+C`) and run:
 
 ```bash
 npm install && npx prisma generate && npx prisma db seed
+npm run dev
 ```
 
 ## The workshop, step by step
@@ -262,6 +263,8 @@ Expected results: on `main`, `step-1-context` and `step-2-rules-skills`, exactly
 ## Troubleshooting
 
 **Reset the database.** `npx prisma db seed` deletes `prisma/dev.db` and rebuilds it from the current branch's schema. Run it after switching branches, after a schema change, or if the data looks wrong. If you see `no such table` or `no such column`, you skipped this.
+
+**The app still shows old data, or errors, after re-seeding or switching branches.** Restart `npm run dev`. A running server keeps the old database file open and keeps using the Prisma client it started with, so it won't see a new database or a regenerated client until it restarts.
 
 **"Prisma Client could not be found" or type errors in `lib/generated`.** Run `npx prisma generate`. The client is generated into `lib/generated/prisma` and isn't committed.
 
