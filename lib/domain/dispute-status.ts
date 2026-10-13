@@ -5,15 +5,20 @@ import { invoiceBalance, isOpenInvoice, type InvoiceState } from "@/lib/domain/i
 //
 //   open ──start_review──▶ under_review
 //     │                        │
-//     └────────withdraw────────┴──▶ withdrawn
+//     ├────────withdraw────────┴──▶ withdrawn
+//     │                        │
+//     └────────resolve─────────┴──▶ resolved   (admin only: accepted or rejected)
 //
-// Resolving a dispute is not built yet: see .cursor/plans/resolve-dispute.md.
+// `resolve` goes through POST /api/disputes/:id/resolve, never POST /transitions.
 
 export const DISPUTE_STATUSES = ["open", "under_review", "withdrawn", "resolved"] as const;
 export type DisputeStatus = (typeof DISPUTE_STATUSES)[number];
 
-export const DISPUTE_EVENTS = ["start_review", "withdraw"] as const;
+export const DISPUTE_EVENTS = ["start_review", "withdraw", "resolve"] as const;
 export type DisputeEvent = (typeof DISPUTE_EVENTS)[number];
+
+/** Events raised from the dispute page's action buttons via POST /api/disputes/:id/transitions. */
+export type DisputeReviewEvent = Exclude<DisputeEvent, "resolve">;
 
 export const DISPUTE_RESOLUTIONS = ["accepted", "rejected"] as const;
 export type DisputeResolution = (typeof DISPUTE_RESOLUTIONS)[number];
@@ -25,8 +30,8 @@ export type DisputeReason = (typeof DISPUTE_REASONS)[number];
 export const ACTIVE_DISPUTE_STATUSES: readonly DisputeStatus[] = ["open", "under_review"];
 
 const TRANSITIONS: Record<DisputeStatus, Partial<Record<DisputeEvent, DisputeStatus>>> = {
-  open: { start_review: "under_review", withdraw: "withdrawn" },
-  under_review: { withdraw: "withdrawn" },
+  open: { start_review: "under_review", withdraw: "withdrawn", resolve: "resolved" },
+  under_review: { withdraw: "withdrawn", resolve: "resolved" },
   withdrawn: {},
   resolved: {},
 };
@@ -59,8 +64,24 @@ export function transitionDispute(status: DisputeStatus, event: DisputeEvent): D
   return next;
 }
 
-export function availableDisputeActions(status: DisputeStatus): DisputeEvent[] {
-  return DISPUTE_EVENTS.filter((event) => canTransitionDispute(status, event));
+/** The review actions offered as buttons. Resolving has its own dialog, so it is not listed. */
+export function availableDisputeActions(status: DisputeStatus): DisputeReviewEvent[] {
+  return DISPUTE_EVENTS.filter(
+    (event): event is DisputeReviewEvent => event !== "resolve" && canTransitionDispute(status, event),
+  );
+}
+
+/**
+ * How much to credit when a dispute is resolved. Accepting credits the disputed amount,
+ * capped at what is still owed (nothing if the invoice is already settled); rejecting credits nothing.
+ */
+export function planDisputeResolution(input: {
+  resolution: DisputeResolution;
+  disputedMinor: number;
+  invoiceBalanceMinor: number;
+}): { creditNoteMinor: number } {
+  if (input.resolution === "rejected" || input.invoiceBalanceMinor <= 0) return { creditNoteMinor: 0 };
+  return { creditNoteMinor: Math.max(0, Math.min(input.disputedMinor, input.invoiceBalanceMinor)) };
 }
 
 /** Guards for opening a new dispute against an invoice. */

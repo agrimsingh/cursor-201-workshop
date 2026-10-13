@@ -79,9 +79,20 @@ The invoice row keeps `amountPaidMinor`, `amountCreditedMinor` and a denormalise
 
 ## Disputes
 
-`lib/domain/dispute-status.ts`: `open → under_review → withdrawn` (or `open → withdrawn`). An invoice with an **active** dispute (`open` or `under_review`) is on hold: it stays out of the collections queue. Only one active dispute per invoice; the disputed amount cannot exceed the balance.
+`lib/domain/dispute-status.ts` owns the state machine. An invoice with an **active** dispute (`open` or `under_review`) is on hold: it stays out of the collections queue. Only one active dispute per invoice; the disputed amount cannot exceed the balance.
 
-Resolving a dispute is not built yet. See `.cursor/plans/resolve-dispute.md`.
+| From | Event | To | Who |
+| --- | --- | --- | --- |
+| `open` | `start_review` | `under_review` | agent, admin |
+| `open`, `under_review` | `withdraw` | `withdrawn` | agent, admin |
+| `open`, `under_review` | `resolve` | `resolved` | admin |
+
+`withdrawn` and `resolved` are terminal. `start_review` and `withdraw` go through `POST /api/disputes/:id/transitions`; `resolve` has its own endpoint, `POST /api/disputes/:id/resolve`, because it needs an outcome and a note:
+
+- `accepted`: issues a credit note (reason `dispute_settlement`, linked to the dispute through `CreditNote.disputeId`) for `min(dispute amount, invoice balance)`, computed by `planDisputeResolution`. The invoice settles through the normal state machine and may become `paid`. If the invoice no longer has an open balance (paid or void), no credit note is issued.
+- `rejected`: no money moves. The dispute is no longer active, so the invoice goes back into the collections queue.
+
+Either way `lib/services/disputes.ts#resolveDispute` records `resolution`, `resolutionNote`, `resolvedAt` and `resolvedBy` on the dispute and writes a `dispute.resolved` audit entry (before/after include `status`, `resolution` and `creditNoteId`), all in one transaction. The credit note is created with `lib/services/credit-notes.ts#createCreditNoteInTx`, the same code `POST /api/credit-notes` uses.
 
 ## Aging and collections
 
@@ -102,6 +113,7 @@ The user switcher in the header sets a cookie. There is no real auth.
 | Open disputes, start review, mark withdrawn | | ✓ | ✓ |
 | Read the audit log | | ✓ | ✓ |
 | Void invoices, issue credit notes | | | ✓ |
+| Resolve disputes (accept or reject) | | | ✓ |
 
 Capabilities live in `lib/domain/permissions.ts`. Services enforce them with `assertCan`; the UI hides buttons the user can't use.
 
@@ -139,6 +151,7 @@ All responses are JSON. Success is `{ "data": ... }`, lists are `{ "data": [...]
 | GET, POST | `/api/disputes` | List (`status` filter), or open |
 | GET | `/api/disputes/:id` | |
 | POST | `/api/disputes/:id/transitions` | `{ "action": "start_review" \| "withdraw" }` |
+| POST | `/api/disputes/:id/resolve` | Admin only. `{ "resolution": "accepted" \| "rejected", "note": "5-1000 chars" }` → `{ "dispute", "creditNote" }` (`creditNote` is `null` when nothing was credited). `409` unless the dispute is `open` or `under_review` |
 | GET | `/api/reports/aging` | Optional `asOf` |
 | GET | `/api/collections` | Optional `asOf` |
 | GET | `/api/customers`, `/api/customers/:id` | |
