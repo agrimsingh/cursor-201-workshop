@@ -115,6 +115,7 @@ If you have local edits, put them aside first with `git stash` (or discard them 
 ```bash
 git checkout step-2-rules-skills
 npm install && npx prisma generate && npx prisma db seed
+npm run dev   # restart it if it was already running
 ```
 
 ## Try it yourself

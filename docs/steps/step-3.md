@@ -122,6 +122,7 @@ If you have local edits, put them aside first with `git stash` (or discard them 
 ```bash
 git checkout step-3-mcp-plugin
 npm install && npx prisma generate && npx prisma db seed
+npm run dev   # restart it if it was already running
 ```
 
 `step-3-mcp-plugin` contains `.cursor/mcp.json` and the fix. You still need your own token (or the OAuth install) and your own fork to open a PR.
