@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { collectionsExportFilename } from "@/lib/collections-export";
 import { OverdueSweepButton } from "@/components/collections/overdue-sweep-button";
 import { AgingTable } from "@/components/reports/aging-table";
 import { Money } from "@/components/ui/money";
@@ -26,7 +27,18 @@ export default async function CollectionsPage() {
       <PageHeader
         title="Collections"
         description={`${queue.items.length} past-due invoices to chase · ${queue.onHoldCount} on hold while in dispute`}
-        actions={can(actor.role, "invoices:mark_overdue") ? <OverdueSweepButton /> : null}
+        actions={
+          <>
+            <a
+              className="btn-secondary"
+              href={`/api/collections/export?asOf=${encodeURIComponent(now.toISOString())}`}
+              download={collectionsExportFilename(now)}
+            >
+              Export CSV
+            </a>
+            {can(actor.role, "invoices:mark_overdue") ? <OverdueSweepButton /> : null}
+          </>
+        }
       />
       <div className="flex flex-col gap-6">
         <Section title="Aging">
