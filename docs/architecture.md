@@ -89,6 +89,7 @@ Resolving a dispute is not built yet. See `.cursor/plans/resolve-dispute.md`.
 
 - `GET /api/reports/aging` returns totals per currency and per customer.
 - `GET /api/collections` returns the queue: past-due, open, not-on-hold invoices, most overdue first, each with a suggested next step (reminder, call, final notice, escalate).
+- `GET /api/collections/export` returns the same queue as `text/csv` with a dated filename; balances are decimal strings from minor units (never floats). All roles, including viewers, may export.
 
 ## Roles
 
@@ -141,6 +142,7 @@ All responses are JSON. Success is `{ "data": ... }`, lists are `{ "data": [...]
 | POST | `/api/disputes/:id/transitions` | `{ "action": "start_review" \| "withdraw" }` |
 | GET | `/api/reports/aging` | Optional `asOf` |
 | GET | `/api/collections` | Optional `asOf` |
+| GET | `/api/collections/export` | Optional `asOf`; CSV attachment |
 | GET | `/api/customers`, `/api/customers/:id` | |
 | GET | `/api/audit` | `entityType`, `entityId`, paging |
 | GET, PUT | `/api/session` | Current user, or switch user |
